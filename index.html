@@ -1,0 +1,147 @@
+here <!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>_RHS_ • Members & Assistant</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#0e0f13;
+      --card:#12141bcc;
+      --text:#e6e7eb;
+      --muted:#9aa0aa;
+      --brand:#7c5cff;
+      --brand-2:#00d4ff;
+      --accent:#1be9b3;
+      --ring: #b9a7ff66;
+      --shadow: 0 10px 30px rgba(0,0,0,.35);
+      --radius: 20px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; font-family:'Inter',sans-serif; color:var(--text);
+      background:linear-gradient(180deg, #0a0b10 0%, #0e0f13 100%);
+    }
+    header{position:sticky; top:0; background:#0a0b10cc; backdrop-filter:blur(8px);}
+    .bar{display:flex; align-items:center; padding:12px 18px;}
+    .menu{color:var(--text); font-size:24px; text-decoration:none; margin-right:10px;}
+    .logo{font-weight:800; font-size:20px; background:linear-gradient(90deg,var(--brand),var(--brand-2));
+      -webkit-background-clip:text; color:transparent;}
+    .who{margin-left:auto; font-size:14px; color:var(--muted)}
+    .wrap{max-width:1000px; margin:24px auto; padding:0 16px; display:grid; gap:18px}
+    .section-title{font-weight:700; font-size:18px}
+    .grid{display:grid; gap:14px}
+    .card{background:#171923; border-radius:var(--radius); border:1px solid #2a2f49;
+      transition:.3s transform ease, .3s box-shadow ease, .3s border-color ease;
+      overflow:hidden; opacity:0; transform:translateY(40px); animation:fadeUp .7s ease forwards;}
+    @keyframes fadeUp{to{opacity:1; transform:none}}
+    .card-head{padding:14px; cursor:pointer; display:flex; justify-content:space-between; align-items:center}
+    .title{font-weight:600}
+    .chev{transition:.2s}
+    .card.open .chev{transform:rotate(180deg)}
+    .details{max-height:0; overflow:hidden; transition:max-height .5s ease;}
+    .details-inner{padding:12px; font-size:14px; color:#cfd3e6}
+    .assistant{background:#141823; border:1px solid #2a2f49; border-radius:var(--radius); padding:16px;
+      animation:popIn 1s ease both;}
+    @keyframes popIn{0%{transform:scale(.8); opacity:0}100%{transform:scale(1);opacity:1}}
+    .chat{background:#0f1220; border:1px solid #262c45; border-radius:16px; padding:10px;
+      max-height:250px; overflow:auto; margin-bottom:10px; display:grid; gap:8px; font-size:14px;}
+    .bubble{padding:8px 10px; border-radius:12px; max-width:80%;}
+    .me{background:#243250; margin-left:auto}
+    .ai{background:#1b2a25}
+    textarea{width:100%; min-height:60px; border-radius:10px; border:1px solid #333; background:#0f1322; color:var(--text); padding:8px}
+    .btn{padding:8px 12px; border:none; border-radius:8px; cursor:pointer}
+    .primary{background:linear-gradient(90deg,var(--brand),var(--brand-2)); color:#fff; font-weight:700}
+    .special{background:#171923; border:1px solid #2a2f49; border-radius:var(--radius); padding:16px}
+    .toggle{cursor:pointer; padding:8px; border:1px dashed #333; border-radius:10px; margin:5px 0}
+    .hidden{display:none}
+    .splash{position:fixed; inset:0; display:grid; place-items:center; background:#0a0b10; z-index:999}
+    .gate{background:#171923; border-radius:var(--radius); padding:20px; text-align:center;
+      animation:bounceIn .8s cubic-bezier(.16,1,.3,1) both;}
+    @keyframes bounceIn{0%{transform:scale(.6); opacity:0}60%{transform:scale(1.1);opacity:1}100%{transform:scale(1)}}
+    .field{margin-top:10px; display:flex; gap:10px}
+    .field input{flex:1; padding:8px; border-radius:8px; border:1px solid #333; background:#0f1322; color:#fff}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="bar">
+      <a class="menu" href="marsi.html">≡</a>
+      <div class="logo">_RHS_</div>
+      <div class="who">Hi, <span id="whoName">Guest</span></div>
+    </div>
+  </header>
+  <main class="wrap">
+    <!-- Assistant -->
+    <section class="assistant">
+      <h2>RHS Ai Assistant 🤖</h2>
+      <div class="chat" id="chat"></div>
+      <textarea id="ask" placeholder="আপনার প্রশ্ন লিখুন..."></textarea>
+      <div style="margin-top:8px;text-align:right">
+        <button class="btn" id="clearChat">Clear</button>
+        <button class="btn primary" id="send">Send</button>
+      </div>
+    </section>
+    <!-- Members -->
+    <h3 class="section-title">Members</h3>
+    <section class="grid" id="members">
+      <!-- example card -->
+      <article class="card">
+        <div class="card-head" onclick="toggleCard(this)">
+          <div class="title">1. Rakib (বয়স: ১৪)</div>
+          <div class="chev">⌄</div>
+        </div>
+        <div class="details"><div class="details-inner">চালাক শয়তান 😄</div></div>
+      </article>
+      <!-- others omitted for brevity: replicate with data -->
+    </section>
+    <!-- Special -->
+    <section class="special">
+      <div class="toggle" onclick="editName()">🔤 নাম পরিবর্তন করুন</div>
+      <div class="toggle" onclick="toggleNames()">👣 কে কে কাল ভাগা মারসে?</div>
+      <div id="theNames" class="hidden">আদেব - নাহিদ</div>
+    </section>
+  </main>
+  <!-- Splash -->
+  <div class="splash" id="splash">
+    <div class="gate">
+      <h2>Please Enter Your Name!</h2>
+      <div class="field">
+        <input id="nameInput" placeholder="আপনার নাম" />
+        <button class="btn primary" id="enterBtn">Enter</button>
+      </div>
+    </div>
+  </div>
+<script>
+  const whoName=document.getElementById('whoName');
+  const splash=document.getElementById('splash');
+  const nameInput=document.getElementById('nameInput');
+  const enterBtn=document.getElementById('enterBtn');
+  function setName(n){localStorage.setItem('rhs_name',n); whoName.textContent=n;}
+  function needGate(){let n=localStorage.getItem('rhs_name'); if(n){setName(n); splash.style.display='none';} else splash.style.display='grid';}
+  enterBtn.onclick=()=>{setName(nameInput.value||'Guest'); splash.style.display='none';};
+  function editName(){let n=prompt('নতুন নাম দিন:',localStorage.getItem('rhs_name')||''); if(n){setName(n);}}
+  function toggleNames(){document.getElementById('theNames').classList.toggle('hidden');}
+  function toggleCard(el){let card=el.closest('.card'); card.classList.toggle('open'); let d=card.querySelector('.details'); d.style.maxHeight=card.classList.contains('open')?d.scrollHeight+'px':'0';}
+  // Assistant
+  const chat=document.getElementById('chat'),ask=document.getElementById('ask'),send=document.getElementById('send'),clearBtn=document.getElementById('clearChat');
+  function addBubble(txt,who='ai'){let b=document.createElement('div'); b.className='bubble '+who; b.textContent=txt; chat.appendChild(b); chat.scrollTop=chat.scrollHeight;}
+  function safeMathEval(expr){if(!/^[0-9+\-*/%().\s]+$/.test(expr)) return null; try{return Function('return '+expr)()}catch{return null}}
+  function answer(q){q=q.toLowerCase();
+    if(/hi|hello|কেমন আছ/.test(q)) return "হাই! আমি RHS Assistant, ভালো আছি ✨";
+    if(/তোমার নাম|who are you/.test(q)) return "আমি RHS Ai Assistant 🤖।";
+    if(/date|আজ/.test(q)) return new Date().toLocaleDateString();
+    if(/time|সময়/.test(q)) return new Date().toLocaleTimeString();
+    if(/weather|আবহাওয়া/.test(q)) return "আমি লোকাল আবহাওয়া আনতে পারি না, তবে আজকের আবহাওয়া ভালোই মনে হচ্ছে ☁️";
+    let m=q.match(/([-+*/%()\d\s.]+)/); if(m){let val=safeMathEval(m[1]); if(val!==null) return `${m[1]} = ${val}`;}
+    return "এই প্রশ্নটা আমি পুরোপুরি বুঝতে পারিনি, তবে চেষ্টা করছি শিখতে 📖।";
+  }
+  function sendMsg(){let q=ask.value.trim(); if(!q) return; addBubble(q,'me'); let a=answer(q); setTimeout(()=>addBubble(a,'ai'),400); ask.value='';}
+  send.onclick=sendMsg;
+  ask.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMsg();}});
+  clearBtn.onclick=()=>chat.innerHTML='';
+  needGate();
+</script>
+</body>
+  </html>

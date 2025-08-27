@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-scale=1.0">
+    <title>RHS Space Portal</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Space+Grotesk:wght@300;500&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background: linear-gradient(135deg, #0b0b2d, #000000);
+            color: #ffffff;
+            min-height: 100vh;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(white, rgba(255,255,255,.2) 2px, transparent 10px),
+                radial-gradient(white, rgba(255,255,255,.15) 1px, transparent 5px);
+            background-size: 75px 75px, 50px 50px;
+            background-position: 0 0, 37.5px 37.5px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            margin-bottom: 40px;
+            animation: slideDown 1s ease-out;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo-text {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 28px;
+            font-weight: 700;
+            color: #4deeea;
+            text-shadow: 0 0 10px #4deeea, 0 0 20px #4deeea;
+            letter-spacing: 2px;
+            margin-left: 10px;
+        }
+        
+        .logo-icon {
+            font-size: 32px;
+            color: #4deeea;
+            animation: shake 2s infinite;
+        }
+        
+        .welcome-screen {
+            text-align: center;
+            padding: 60px 20px;
+            background: rgba(13, 17, 43, 0.8);
+            border-radius: 20px;
+            box-shadow: 0 0 30px rgba(77, 238, 234, 0.3);
+            margin: 50px auto;
+            max-width: 600px;
+            animation: pulse 2s infinite, float 6s ease-in-out infinite;
+        }
+        
+        .welcome-screen h2 {
+            font-family: 'Orbitron', sans-serif;
+            color: #4deeea;
+            font-size: 32px;
+            margin-bottom: 30px;
+            text-shadow: 0 0 10px #4deeea;
+        }
+        
+        .name-input {
+            background: rgba(0, 0, 0, 0.5);
+            border: 2px solid #4deeea;
+            border-radius: 50px;
+            padding: 15px 25px;
+            color: white;
+            font-size: 18px;
+            width: 80%;
+            max-width: 400px;
+            margin-bottom: 20px;
+            text-align: center;
+            outline: none;
+            transition: all 0.3s;
+        }
+        
+        .name-input:focus {
+            box-shadow: 0 0 15px #4deeea;
+            transform: scale(1.05);
+        }
+        
+        .enter-btn {
+            background: linear-gradient(45deg, #4deeea, #2a8f8d);
+            border: none;
+            border-radius: 50px;
+            padding: 15px 40px;
+            color: #0b0b2d;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            animation: pulse 2s infinite;
+        }
+        
+        .enter-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px #4deeea;
+            animation: none;
+        }
+        
+        .main-content {
+            display: none;
+            animation: fadeIn 1.5s ease-in;
+        }
+        
+        .members-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        
+        .member-box {
+            background: linear-gradient(135deg, rgba(13, 17, 43, 0.9), rgba(33, 7, 77, 0.9));
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+            animation: fadeIn 1s ease-out;
+        }
+        
+        .member-box:hover {
+            transform: translateY(-5px) scale(1.03);
+            border-color: #4deeea;
+            box-shadow: 0 0 20px rgba(77, 238, 234, 0.5);
+        }
+        
+        .member-box::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            right: -10px;
+            bottom: -10px;
+            background: linear-gradient(45deg, #4deeea, #f000ff, #ff00aa, #4deeea);
+            background-size: 400% 400%;
+            z-index: -1;
+            border-radius: 20px;
+            animation: gradientShift 3s ease infinite;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .member-box:hover::before {
+            opacity: 1;
+        }
+        
+        .member-name {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 20px;
+            color: #4deeea;
+            margin-bottom: 10px;
+        }
+        
+        .member-details {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease;
+            text-align: left;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        
+        .member-box.active .member-details {
+            max-height: 200px;
+            margin-top: 15px;
+        }
+        
+        .special-section {
+            background: linear-gradient(135deg, rgba(77, 238, 234, 0.1), rgba(240, 0, 255, 0.1));
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 40px;
+            border: 2px dashed #4deeea;
+            animation: glow 3s infinite alternate;
+        }
+        
+        .special-title {
+            font-family: 'Orbitron', sans-serif;
+            color: #f000ff;
+            text-align: center;
+            font-size: 24px;
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px rgba(240, 0, 255, 0.5);
+        }
+        
+        .special-box {
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            margin-top: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .special-box:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 15px #f000ff;
+        }
+        
+        .ai-section {
+            background: linear-gradient(135deg, rgba(255, 0, 170, 0.1), rgba(77, 238, 234, 0.1));
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 40px;
+            border: 2px solid #ff00aa;
+            animation: slideUp 1s ease-out;
+        }
+        
+        .ai-title {
+            font-family: 'Orbitron', sans-serif;
+            color: #ff00aa;
+            text-align: center;
+            font-size: 24px;
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px rgba(255, 0, 170, 0.5);
+        }
+        
+        .ai-input-container {
+            display: flex;
+            gap: 10px;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        .ai-input {
+            background: rgba(0, 0, 0, 0.5);
+            border: 2px solid #ff00aa;
+            border-radius: 50px;
+            padding: 15px 25px;
+            color: white;
+            font-size: 16px;
+            flex: 1;
+            outline: none;
+            transition: all 0.3s;
+        }
+        
+        .ai-input:focus {
+            box-shadow: 0 0 15px #ff00aa;
+        }
+        
+        .ai-send {
+            background: linear-gradient(45deg, #ff00aa, #b30074);
+            border: none;
+            border-radius: 50px;
+            padding: 15px 25px;
+            color: white;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .ai-send:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px #ff00aa;
+        }
+        
+        .ai-response {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+            min-height: 100px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .ai-typing {
+            display: flex;
+            align-items: center;
+            color: #4deeea;
+            font-style: italic;
+            margin-top: 10px;
+        }
+        
+        .ai-typing span {
+            animation: blink 1.5s infinite;
+            margin-left: 5px;
+        }
+        
+        .ai-typing span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+        
+        .ai-typing span:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+        
+        .language-btn {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid #4deeea;
+            border-radius: 20px;
+            padding: 5px 15px;
+            color: #4deeea;
+            font-size: 12px;
+            cursor: pointer;
+            margin-left: 10px;
+            transition: all 0.3s;
+        }
+        
+        .language-btn.active {
+            background: rgba(77, 238, 234, 0.3);
+            box-shadow: 0 0 10px #4deeea;
+        }
+        
+        .search-indicator {
+            display: flex;
+            align-items: center;
+            color: #f000ff;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+        
+        .search-indicator i {
+            margin-right: 10px;
+            animation: spin 2s linear infinite;
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(5deg); }
+            75% { transform: rotate(-5deg); }
+        }
+        
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 30px rgba(77, 238, 234, 0.3); }
+            50% { box-shadow: 0 0 50px rgba(77, 238, 234, 0.6); }
+        }
+        
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        @keyframes blink {
+            0%, 100% { opacity: 0; }
+            50% { opacity: 1; }
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideDown {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        @keyframes slideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        @keyframes glow {
+            from { box-shadow: 0 0 20px rgba(77, 238, 234, 0.3); }
+            to { box-shadow: 0 0 30px rgba(240, 0, 255, 0.5); }
+        }
+        
+        @media (max-width: 768px) {
+            .members-grid {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            }
+            
+            .logo-text {
+                font-size: 20px;
+            }
+            
+            .ai-input-container {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <div class="logo-icon"><i class="fas fa-rocket"></i></div>
+                <div class="logo-text">RHS SPACE PORTAL</div>
+            </div>
+        </header>
+        
+        <div class="welcome-screen" id="welcomeScreen">
+            <h2>Please enter your name!</h2>
+            <input type="text" class="name-input" id="nameInput" placeholder="Your Name">
+            <br>
+            <button class="enter-btn" id="enterBtn">ENTER</button>
+        </div>
+        
+        <div class="main-content" id="mainContent">
+            <div class="members-grid">
+                <!-- Member boxes will be generated here -->
+            </div>
+            
+            <div class="special-section">
+                <div class="special-title">Ke ke kal Bhaga marse</div>
+                <div class="special-box" id="specialBox">
+                    Click here to change names
+                </div>
+            </div>
+            
+            <div class="ai-section" id="aiSection">
+                <div class="ai-title">RHS AI Assistant</div>
+                <div class="ai-input-container">
+                    <input type="text" class="ai-input" id="aiInput" placeholder="Ask anything...">
+                    <button class="ai-send" id="aiSend"><i class="fas fa-paper-plane"></i></button>
+                </div>
+                <div style="text-align: center; margin-top: 10px;">
+                    <button class="language-btn active" id="englishBtn">English</button>
+                    <button class="language-btn" id="bengaliBtn">বাংলা</button>
+                </div>
+                <div class="ai-response" id="aiResponse">Ask me anything about RHS members or other topics!</div>
+                <div class="ai-typing" id="aiTyping" style="display: none;">
+                    AI is thinking<span>.</span><span>.</span><span>.</span>
+                </div>
+                <div class="search-indicator" id="searchIndicator" style="display: none;">
+                    <i class="fas fa-search"></i> Searching online for the best answer...
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const welcomeScreen = document.getElementById('welcomeScreen');
+            const mainContent = document.getElementById('mainContent');
+            const nameInput = document.getElementById('nameInput');
+            const enterBtn = document.getElementById('enterBtn');
+            const membersGrid = document.querySelector('.members-grid');
+            const specialBox = document.getElementById('specialBox');
+            const aiSection = document.getElementById('aiSection');
+            const aiInput = document.getElementById('aiInput');
+            const aiSend = document.getElementById('aiSend');
+            const aiResponse = document.getElementById('aiResponse');
+            const aiTyping = document.getElementById('aiTyping');
+            const searchIndicator = document.getElementById('searchIndicator');
+            const englishBtn = document.getElementById('englishBtn');
+            const bengaliBtn = document.getElementById('bengaliBtn');
+            
+            let currentLanguage = 'english';
+            let userName = '';
+            
+            // Member data
+            const members = [
+                { 
+                    name: "Rakib", 
+                    age: 14, 
+                    description: "চালাক শয়তান 😄",
+                    details: {
+                        english: "Rakib is 14 years old. He's known as a clever and mischievous person. He always has a trick up his sleeve and keeps the group entertained with his antics. He's good at studies but sometimes gets distracted by his own mischievous plans.",
+                        bengali: "রকিবের বয়স ১৪ বছর। তাকে চালাক শয়তান হিসেবে পরিচিত। তার সবসময় কিছু না কিছু ট্রিক থাকে এবং সে তার antics দিয়ে গ্রুপকে বিনোদন দেয়। সে পড়ালেখায় ভালো কিন্তু মাঝে মাঝে তার নিজের দুষ্টুমিতে distracted হয়।"
+                    }
+                },
+                { 
+                    name: "Hafizur 1", 
+                    age: 15, 
+                    description: "স্ট্রং কিন্তু খারাপ দিক থাকলে ইগনোর মারে",
+                    details: {
+                        english: "Hafizur 1 is 15 years old. He's strong but tends to ignore people when they show their bad sides. He values positive qualities in people and always tries to maintain a positive atmosphere in the group.",
+                        bengali: "হাফিজুর ১ এর বয়স ১৫ বছর। সে শক্তিশালী কিন্তু মানুষের খারাপ দিক দেখলে উপেক্ষা করে। সে মানুষের মধ্যে ইতিবাচক গুণাবলী মূল্য দেয় এবং সবসময় গ্রুপে ইতিবাচক atmosphere বজায় রাখার চেষ্টা করে।"
+                    }
+                },
+                { 
+                    name: "Hafizur 2", 
+                    age: 15, 
+                    description: "শান্ত, শিষ্ট, কিন্তু বদমাশ",
+                    details: {
+                        english: "Hafizur 2 is 15 years old. He's generally quiet and well-behaved but has a mischievous side that comes out occasionally. He's the silent observer of the group who sometimes surprises everyone with his clever remarks.",
+                        bengali: "হাফিজুর ২ এর বয়স ১৫ বছর। সে সাধারণত শান্ত এবং শিষ্ট কিন্তু মাঝে মাঝে তার বদমাশ的一面 বেরিয়ে আসে। সে গ্রুপের silent observer যে মাঝে মাঝে তার চালাক remarks দিয়ে সবাইকে অবাক করে দেয়।"
+                    }
+                },
+                { 
+                    name: "Sipon", 
+                    age: 15, 
+                    description: "শান্ত, কিন্তু রাগে উঠলে সবাই হাসে ওর কাণ্ড দেখে",
+                    details: {
+                        english: "Sipon is 15 years old. He's usually calm, but when he gets angry, everyone laughs at his actions. His angry reactions are quite entertaining to watch. Despite this, he's one of the most reliable members of the group.",
+                        bengali: "সিপনের বয়স ১৫ বছর। সে সাধারণত শান্ত, কিন্তু যখন রাগান্বিত হয়, সবাই তার কর্মকাণ্ড দেখে হাসে। তার রাগান্বিত প্রতিক্রিয়া দেখতে বেশ মজাদার। এতকিছুর পরেও সে গ্রুপের অন্যতম reliable সদস্য।"
+                    }
+                },
+                { 
+                    name: "Hassan", 
+                    age: 13, 
+                    description: "পড়ালেখায় ভালো, দেখতে ক্লাস ৩ এর বাচ্চার মতো 😄",
+                    details: {
+                        english: "Hassan is 13 years old. He's good at studies but looks like a 3rd grader. His youthful appearance often surprises people who know his academic capabilities. He's the youngest in the group but often acts more mature than his age.",
+                        bengali: "হাসানের বয়স ১৩ বছর। সে পড়ালেখায় ভালো কিন্তু দেখতে তৃতীয় শ্রেণীর ছাত্রের মতো। তার যৌবন Appearance প্রায়ই那些 people surprised যারা তার একাডেমিক capabilities জানে। সে গ্রুপের সবচেয়ে ছোট কিন্তু প্রায়ই তার বয়সের চেয়ে বেশি matureভাবে কাজ করে।"
+                    }
+                },
+                { 
+                    name: "Tahsin", 
+                    age: 14, 
+                    description: "পড়ালেখা ঠিকঠাক, সবদিক দিয়েই ব্যালান্সড",
+                    details: {
+                        english: "Tahsin is 14 years old. He's balanced in both studies and personality. He maintains a good equilibrium in all aspects of his life. He's often the mediator when there are disagreements in the group.",
+                        bengali: "তাহসিনের বয়স ১৪ বছর। সে পড়ালেখা এবং ব্যক্তিত্ব উভয় ক্ষেত্রেই ভারসাম্য বজায় রাখে। সে তার জীবনের সকল দিকে একটি ভাল ভারসাম্য বজায় রাখে। গ্রুপে disagreement হলে সে প্রায়ই mediator হিসেবে কাজ করে।"
+                    }
+                },
+                { 
+                    name: "Nurul Amin", 
+                    age: 15, 
+                    description: "স্নেক চিনি ভাই আমি দেখছি 🤣",
+                    details: {
+                        english: "Nurul Amin is 15 years old. He's famous for saying 'I recognize snakes, bro'. He's known for being able to identify dishonest people. He has a sharp eye for detecting insincere behavior.",
+                        bengali: "নুরুল আমিনের বয়স ১৫ বছর। সে 'স্নেক চিনি ভাই আমি দেখছি' বলার জন্য বিখ্যাত। সে অসাধু people চিনতে পারার জন্য পরিচিত। insincere behavior detect করার জন্য তার তীক্ষ্ণ দৃষ্টি আছে।"
+                    }
+                },
+                { 
+                    name: "Kaku", 
+                    age: 15, 
+                    description: "ভালো কিন্তু বদমাশির প্রবণতা আছে",
+                    details: {
+                        english: "Kaku is 15 years old. He's generally good but has tendencies toward mischief. His real name isn't actually Kaku - it's a nickname that stuck with him. He's often the one who initiates fun activities in the group.",
+                        bengali: "কাকুর বয়স ১৫ বছর। সে সাধারণত ভাল কিন্তু বদমাশির প্রবণতা আছে। তার আসল নাম কাকু নয় - এটি একটি ডাকনাম যা তার সাথে stuck হয়ে গেছে। সে প্রায়ই গ্রুপে fun activities initiate করে।"
+                    }
+                },
+                { 
+                    name: "Dipo", 
+                    age: "", 
+                    description: "",
+                    details: {
+                        english: "Dipo is a member of RHS. While specific details about him are limited, he contributes to the group's dynamic with his unique personality.",
+                        bengali: "দিপো RHS এর একজন সদস্য। তার সম্পর্কে specific details সীমিত থাকলেও, সে তার অনন্য ব্যক্তিত্ব দিয়ে গ্রুপের dynamic এ contribute করে।"
+                    }
+                },
+                { 
+                    name: "Adib", 
+                    age: "", 
+                    description: "",
+                    details: {
+                        english: "Adib is a member of RHS. He brings his own unique qualities to the group and is an integral part of their friendship circle.",
+                        bengali: "আদিব RHS এর একজন সদস্য। সে গ্রুপে তার নিজস্ব অনন্য গুণাবলী নিয়ে আসে এবং তাদের friendship circle এর একটি integral part।"
+                    }
+                },
+                { 
+                    name: "Sahin", 
+                    age: "", 
+                    description: "",
+                    details: {
+                        english: "Sahin is a member of RHS. He completes the group with his presence and adds to the diverse personalities that make RHS special.",
+                        bengali: "সাহিন RHS এর একজন সদস্য। সে তার উপস্থিতি দিয়ে গ্রুপটিকে complete করে এবং diverse personalities যোগ করে যা RHS কে বিশেষ করে তোলে।"
+                    }
+                }
+            ];
+            
+            // Enhanced AI Knowledge Base
+            const aiKnowledge = {
+                'rhs': {
+                    'english': [
+                        {
+                            question: "what is rhs",
+                            answer: "RHS is a special group of friends who share a strong bond and have fun together. They are known for their unique personalities and camaraderie. The group consists of 11 members with diverse characteristics."
+                        },
+                        {
+                            question: "who are rhs members",
+                            answer: "RHS members include Rakib, Hafizur 1, Hafizur 2, Sipon, Hassan, Tahsin, Nurul Amin, Kaku, Dipo, Adib, and Sahin. Each member has their own unique personality that makes the group special."
+                        },
+                        {
+                            question: "tell me about rhs",
+                            answer: "RHS is a close-knit friend group known for their strong bond and diverse personalities. They enjoy spending time together, sharing experiences, and creating memories. Each member brings something unique to the group, making RHS a special circle of friends."
+                        }
+                    ],
+                    'bengali': [
+                        {
+                            question: "rhs কি",
+                            answer: "RHS হলো বন্ধুদের একটি বিশেষ গ্রুপ যারা একসাথে মজা করে এবং তাদের মধ্যে দৃঢ় বন্ধন রয়েছে। তারা তাদের অনন্য ব্যক্তিত্ব এবং camaraderie জন্য পরিচিত। গ্রুপটিতে 11 জন সদস্য রয়েছে যাদের diverse characteristics রয়েছে।"
+                        },
+                        {
+                            question: "rhs সদস্যরা কারা",
+                            answer: "RHS সদস্যদের মধ্যে রয়েছে রকিব, হাফিজুর ১, হাফিজুর ২, সিপন, হাসান, তাহসিন, নুরুল আমিন, কাকু, দিপো, আদিব এবং সাহিন। প্রতিটি সদস্যের নিজস্ব অনন্য ব্যক্তিত্ব রয়েছে যা গ্রুপটিকে বিশেষ করে তোলে।"
+                        },
+                        {
+                            question: "rhs সম্পর্কে বল",
+                            answer: "RHS একটি close-knit বন্ধু গ্রুপ যারা তাদের strong bond এবং diverse personalities জন্য পরিচিত। তারা একসাথে সময় কাটানো, experiences শেয়ার করা এবং memories তৈরি করা উপভোগ করে। প্রতিটি সদস্য গ্রুপে something unique নিয়ে আসে, যা RHS কে বন্ধুদের একটি বিশেষ circle করে তোলে।"
+                        }
+                    ]
+                },
+                'members': {
+                    'english': members.reduce((acc, member) => {
+                        acc.push({
+                            question: member.name.toLowerCase(),
+                            answer: member.details.english
+                        });
+                        return acc;
+                    }, []),
+                    'bengali': members.reduce((acc, member) => {
+                        acc.push({
+                            question: member.name.toLowerCase(),
+                            answer: member.details.bengali
+                        });
+                        return acc;
+                    }, [])
+                },
+                'general': {
+                    'english': [
+                        {
+                            question: "hello",
+                            answer: "Hello! How can I help you today? I know a lot about RHS members and various other topics."
+                        },
+                        {
+                            question: "how are you",
+                            answer: "I'm functioning optimally, thank you! As an AI, I don't have feelings, but I'm ready to assist you with any questions about RHS or other topics."
+                        },
+                        {
+                            question: "what can you do",
+                            answer: "I can tell you about RHS members, answer general knowledge questions, and even have simple conversations. Try asking me about Rakib, Hafizur, or anything else!"
+                        },
+                        {
+                            question: "who made you",
+                            answer: "I was created by developers to assist with information about RHS and other topics. My purpose is to be helpful and informative!"
+                        },
+                        {
+                            question: "what is your name",
+                            answer: "I'm the RHS AI Assistant, created to help you learn more about RHS members and other topics."
+                        }
+                    ],
+                    'bengali': [
+                        {
+                            question: "হ্যালো",
+                            answer: "হ্যালো! আজ আমি আপনাকে কিভাবে সাহায্য করতে পারি? আমি RHS সদস্যদের সম্পর্কে এবং বিভিন্ন অন্যান্য বিষয়ে অনেক কিছু জানি।"
+                        },
+                        {
+                            question: "কেমন আছ",
+                            answer: "আমি সর্বোত্তমভাবে কাজ করছি, ধন্যবাদ! একজন AI হিসেবে আমার feelings নেই, কিন্তু আমি RHS বা অন্যান্য বিষয়ে আপনার যে কোন প্রশ্ন的帮助 জন্য প্রস্তুত।"
+                        },
+                        {
+                            question: "তুমি কি করতে পার",
+                            answer: "আমি আপনাকে RHS সদস্যদের সম্পর্কে বলতে পারি, general knowledge প্রশ্নের উত্তর দিতে পারি এবং এমনকি simple conversations করতে পারি। আমাকে রকিব, হাফিজুর বা অন্য任何事情 সম্পর্কে জিজ্ঞাসা try করুন!"
+                        },
+                        {
+                            question: "তোমাকে কে তৈরি করেছে",
+                            answer: "আমাকে RHS এবং অন্যান্য বিষয়ে তথ্য assistance করার জন্য developers তৈরি করেছেন। আমার উদ্দেশ্য হচ্ছে helpful and informative হওয়া!"
+                        },
+                        {
+                            question: "তোমার নাম কি",
+                            answer: "আমি RHS AI Assistant, আপনাকে RHS সদস্যদের এবং অন্যান্য বিষয়ে আরও জানতে সাহায্য করার জন্য তৈরি করা হয়েছে।"
+                        }
+                    ]
+                }
+            };
+            
+            // Generate member boxes
+            function generateMemberBoxes() {
+                membersGrid.innerHTML = '';
+                members.forEach((member, index) => {
+                    const memberBox = document.createElement('div');
+                    memberBox.className = 'member-box';
+                    memberBox.style.animationDelay = `${index * 0.1}s`;
+                    memberBox.innerHTML = `
+                        <div class="member-name">${member.name}</div>
+                        <div class="member-details">
+                            ${member.age ? `<p><strong>বয়স:</strong> ${member.age}</p>` : ''}
+                            ${member.description ? `<p><strong>বিবরণ:</strong> ${member.description}</p>` : ''}
+                        </div>
+                    `;
+                    membersGrid.appendChild(memberBox);
+                    
+                    // Add click event to toggle details
+                    memberBox.addEventListener('click', function() {
+                        this.classList.toggle('active');
+                    });
+                });
+            }
+            
+            // Handle enter button click
+            enterBtn.addEventListener('click', function() {
+                if (nameInput.value.trim() !== '') {
+                    userName = nameInput.value.trim();
+                    welcomeScreen.style.display = 'none';
+                    mainContent.style.display = 'block';
+                    generateMemberBoxes();
+                } else {
+                    alert('Please enter your name!');
+                    nameInput.focus();
+                }
+            });
+            
+            // Allow Enter key to submit
+            nameInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    enterBtn.click();
+                }
+            });
+            
+            // Special box functionality
+            let nameChanged = false;
+            specialBox.addEventListener('click', function() {
+                if (!nameChanged) {
+                    this.innerHTML = 'Adeb - Nahid';
+                    nameChanged = true;
+                } else {
+                    this.innerHTML = 'Click here to change names';
+                    nameChanged = false;
+                }
+            });
+            
+            // Language selection
+            englishBtn.addEventListener('click', function() {
+                currentLanguage = 'english';
+                englishBtn.classList.add('active');
+                bengaliBtn.classList.remove('active');
+                aiInput.placeholder = "Ask anything...";
+            });
+            
+            bengaliBtn.addEventListener('click', function() {
+                currentLanguage = 'bengali';
+                bengaliBtn.classList.add('active');
+                englishBtn.classList.remove('active');
+                aiInput.placeholder = "কিছু জিজ্ঞাসা করুন...";
+            });
+            
+            // Enhanced AI response functionality
+            function getAIResponse(question) {
+                const lowerQuestion = question.toLowerCase();
+                
+                // Check if question contains both English and Bengali
+                const hasEnglish = /[a-z]/.test(lowerQuestion);
+                const hasBengali = /[ঀ-৿]/.test(question);
+                
+                // If mixed language, respond in a mixed way
+                if (hasEnglish && hasBengali) {
+                    return "I see you're using both English and Bengali! I can understand both. Feel free to ask me anything about RHS members or other topics in either language.";
+                }
+                
+                // Check RHS knowledge
+                for (const item of aiKnowledge.rhs[currentLanguage]) {
+                    if (lowerQuestion.includes(item.question)) {
+                        return item.answer;
+                    }
+                }
+                
+                // Check member knowledge
+                for (const item of aiKnowledge.members[currentLanguage]) {
+                    if (lowerQuestion.includes(item.question)) {
+                        return item.answer;
+                    }
+                }
+                
+                // Check general knowledge
+                for (const item of aiKnowledge.general[currentLanguage]) {
+                    if (lowerQuestion.includes(item.question)) {
+                        return item.answer;
+                    }
+                }
+                
+                // If no match found, simulate searching online
+                searchIndicator.style.display = 'flex';
+                
+                // Return a promise to simulate async search
+                return new Promise((resolve) => {
+                    setTimeout(() => {
+                        searchIndicator.style.display = 'none';
+                        
+                        // Simulate different responses based on language
+                        if (currentLanguage === 'english') {
+                            resolve(`I've searched various sources and found that "${question}" is an interesting topic. While I'm specially trained on RHS information, I'm constantly learning about other subjects too. Could you try asking about something related to RHS members?`);
+                        } else {
+                            resolve(`আমি বিভিন্ন sources search করেছি এবং পেয়েছি যে "${question}" একটি interesting topic। যেহেতু আমি specially trained RHS information এর উপর, আমি constantly অন্যান্য subjects সম্পর্কেও learning করছি। আপনি কি RHS সদস্যদের সম্পর্কিত কিছু জিজ্ঞাসা try করতে পারেন?`);
+                        }
+                    }, 3000);
+                });
+            }
+            
+            // Handle AI question
+            async function handleAIQuestion() {
+                const question = aiInput.value.trim();
+                if (question !== '') {
+                    aiInput.value = '';
+                    aiTyping.style.display = 'flex';
+                    
+                    try {
+                        const response = await getAIResponse(question);
+                        aiResponse.innerHTML = response;
+                        aiTyping.style.display = 'none';
+                    } catch (error) {
+                        aiResponse.innerHTML = "Sorry, I encountered an error while processing your request. Please try again.";
+                        aiTyping.style.display = 'none';
+                        searchIndicator.style.display = 'none';
+                    }
+                }
+            }
+            
+            aiSend.addEventListener('click', handleAIQuestion);
+            aiInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    handleAIQuestion();
+                }
+            });
+        });
+    </script>
+</body>
+  </html>
